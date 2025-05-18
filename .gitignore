@@ -1,0 +1,7 @@
+.env
+venv
+*.sqlite3
+migrations
+photos
+DjangoCommands.txt
+.idea

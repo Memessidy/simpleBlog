@@ -5,3 +5,4 @@ migrations
 photos
 DjangoCommands.txt
 .idea
+__pycache__/

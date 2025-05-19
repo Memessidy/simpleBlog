@@ -1,7 +1,8 @@
 .env
 venv
 *.sqlite3
-migrations
+migrations/
 photos
 DjangoCommands.txt
 .idea
+__pycache__/

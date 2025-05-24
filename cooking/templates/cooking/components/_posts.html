@@ -1,0 +1,16 @@
+{% if posts %}
+    {% for post in posts %}
+        <!-- Post-->
+        <div class="card text-center">
+            <div class="card-header">{{ post.category.title }}</div>
+            <div class="card-body"><h5 class="card-title">{{ post.title }}</h5>
+                <p class="card-text">{{ post.content | truncatewords:20 }}</p><a href="{{ post.get_absolute_url }}" class="btn btn-primary">Перейти</a></div>
+            <div class="card-footer text-muted">{{ post.created_at }}</div>
+        </div>
+    {% endfor %}
+
+{% else %}
+    <div class="card text-center">
+        <h5>Пости відсутні</h5>
+    </div>
+{% endif %}

@@ -1,6 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from .models import Post
 from django.db.models import F
+from .forms import PostAddForm, LoginForm
+from django.contrib.auth import login, logout
+
 
 def index(request):
     """Для главной страницы"""
@@ -19,7 +22,7 @@ def category_list(request, pk):
     posts = Post.objects.filter(category_id=pk)
 
     if posts:
-        current_category= posts[0].category.title
+        current_category = posts[0].category.title
     else:
         current_category = 'Головна сторінка'
 
@@ -46,3 +49,46 @@ def post_detail(request, pk):
     }
 
     return render(request, 'cooking/article_detail.html', context)
+
+
+def add_post(request):
+    """Додавання статті від користувача, без адмінки"""
+    if request.method == 'POST':
+        form = PostAddForm(request.POST, request.FILES)
+        if form.is_valid():
+            post = Post.objects.create(**form.cleaned_data)
+            post.save()
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = PostAddForm()
+
+        context = {
+            'form': form,
+            'title': 'Додати статтю'
+        }
+        return render(request, 'cooking/article_add_form.html', context)
+
+
+def user_login(request):
+    """Аутентифікація користувача"""
+    if request.method == 'POST':
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('index')
+    else:
+        form = LoginForm()
+
+        context = {
+            'title': 'Авторизація користувача',
+            'form': form
+        }
+        return render(request, 'cooking/login_form.html', context)
+
+
+def user_logout(request):
+    """Вихід користувача"""
+    logout(request)
+    return redirect('index')
+

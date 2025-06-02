@@ -3,6 +3,7 @@ from .models import Post
 from django.db.models import F
 from .forms import PostAddForm, LoginForm, RegisterForm
 from django.contrib.auth import login, logout
+from django.contrib import messages
 
 
 def index(request):
@@ -76,10 +77,16 @@ def user_login(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
+            messages.success(request, message='Ви успішно зайшли в аккаунт!')
             return redirect('index')
+        else:
+            context = {
+                'title': 'Авторизація користувача',
+                'form': form
+            }
+            return render(request, 'cooking/login_form.html', context)
     else:
         form = LoginForm()
-
         context = {
             'title': 'Авторизація користувача',
             'form': form
@@ -96,7 +103,10 @@ def user_logout(request):
 def register(request):
     """Реєстрація користувача"""
     if request.method == 'POST':
-        pass
+        form = RegisterForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')
     else:
         form = RegisterForm()
 

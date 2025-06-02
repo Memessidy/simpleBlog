@@ -7,6 +7,7 @@
                 <h2 class="text-center">Реєстрація</h2>
                 <form action="" method="post">
                     {% csrf_token %}
+                    {% include 'components/_form_errors.html' %}
                     {{ form.as_p }}
                     <button class="btn btn-dark" type="submit">Зареєструватися</button>
                 </form>

@@ -29,18 +29,18 @@
                                     <a href="{% url 'login' %}" class="nav-link active" aria-current="page">Увійти</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#!" class="nav-link active" aria-current="page">Зареєструватися</a>
+                                    <a href="{% url 'register' %}" class="nav-link active" aria-current="page">Зареєструватися</a>
                                 </li>
                             {% else %}
                                 <li class="nav-item dropdown">
                                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        Вітаємо користувач
+                                        Вітаємо, {{ request.user.username }}!
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                         <li><a class="dropdown-item" href="#!">Моя сторінка</a></li>
                                         <li><a class="dropdown-item" href="{% url 'add' %}">Додати статтю</a></li>
-                                        <li><a class="dropdown-item" href="#!">Вихід</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'logout' %}">Вихід</a></li>
                                     </ul>
                                 </li>
                             {% endif %}

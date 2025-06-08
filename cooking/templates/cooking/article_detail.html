@@ -7,9 +7,9 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between">{{ post.category.title }}
                     <div>
-                        <a href="#!" class="btn btn-dark">Видалити</a>
-                        <a href="#!" class="btn btn-dark">Редагувати</a>
-                        <a href="#!" class="btn btn-dark">Повернутися</a>
+                        <a href="{% url 'post_delete' post.pk %}" class="btn btn-dark">Видалити</a>
+                        <a href="{% url 'post_update' post.pk %}" class="btn btn-dark">Редагувати</a>
+                        <a href="{% url 'category_list' post.category.pk %}" class="btn btn-dark">Повернутися</a>
                     </div>
                 </div>
                 <img src="" class="card-img-top" alt="">
@@ -25,7 +25,7 @@
                         {{ post.content | linebreaks }}
                     </p>
                 </div>
-                <div class="card-footer d-flex justify-content-between"><p class="card-text">4 січня 2023 г. 15:47</p>
+                <div class="card-footer d-flex justify-content-between"><p class="card-text">{{ post.created_at }}</p>
                     <a href="/profile/1">Автор статті: Лох тупий</a>
                     <p class="card-text">{{ post.watched }}</p>
                 </div>

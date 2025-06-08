@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block main %}
+    <!-- Delete confirm-->
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>Ви дійсно хочете видалити статтю з назвою: "{{ post.title }}"?</p>
+
+        <input type="submit" value="Так, видалити" class="btn btn-danger">
+
+        <a href="{{ post.get_absolute_url }}" class="btn btn-dark">Повернутися</a>
+    </form>
+    <div>
+        <div style="margin-top: 720px;"></div>
+    </div>
+{% endblock main %}

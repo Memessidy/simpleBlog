@@ -13,6 +13,7 @@ urlpatterns = [
     path('add_article/', views.AddPost.as_view(), name='add'),
     path('post/<int:pk>/update/', views.PostUpdate.as_view(), name='post_update'),
     path('post/<int:pk>/delete/', views.PostDelete.as_view(), name='post_delete'),
+    path('search/', views.SearchResult.as_view(), name='search'),
 
 
     # Functions

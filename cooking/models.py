@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.contrib.auth.models import User
 import website_settings
 
 
@@ -38,3 +39,19 @@ class Post(models.Model):
     class Meta:
         verbose_name = 'Пост'
         verbose_name_plural = 'Пости'
+
+
+class Comment(models.Model):
+    """Коментарі до постів"""
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='Пост')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Користувач')
+    text = models.TextField(verbose_name='Коментар')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата створення')
+
+    def __str__(self):
+        return self.text
+
+    class Meta:
+        verbose_name = 'Коментар'
+        verbose_name_plural = 'Коментарі'
+

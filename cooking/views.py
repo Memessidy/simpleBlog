@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
-from .models import Post, Category
-from django.db.models import F
-from .forms import PostAddForm, LoginForm, RegisterForm
+from django.db.models import F, Q
 from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
+
+from .models import Post, Category, Comment
+from .forms import PostAddForm, LoginForm, RegisterForm, CommentForm
+import website_settings
 
 
 # def index(request):
@@ -24,7 +26,7 @@ class Index(ListView):
     model = Post
     context_object_name = 'posts'
     template_name = 'cooking/index.html'
-    extra_context = {'title': 'Головна сторінка'}
+    extra_context = {'title': 'Головна сторінка', 'name': website_settings.website_name}
 
 
 # def category_list(request, pk):
@@ -93,6 +95,9 @@ class PostDetail(DetailView):
         ext_posts = ext_posts.order_by('-watched')[:5]
         context['title'] = post.title
         context['ext_posts'] = ext_posts
+
+        if self.request.user.is_authenticated:
+            context['comment_form'] = CommentForm
         return context
 
 
@@ -120,6 +125,18 @@ class AddPost(CreateView):
     extra_context = {'title': 'Додати статтю'}
 
 
+class SearchResult(Index):
+    """Пошук слова в заголовках і в змісту статей"""
+
+    def get_queryset(self):
+        """Функція для фільтрації вибірок із db"""
+        word = self.request.GET.get('q')
+        posts = Post.objects.filter(
+            Q(title__icontains=word) | Q(content__icontains=word)
+        )
+        return posts
+
+
 class PostUpdate(UpdateView):
     """Зміна статті по кнопці"""
     model = Post
@@ -132,6 +149,7 @@ class PostDelete(DeleteView):
     model = Post
     success_url = reverse_lazy('index')
     context_object_name = 'post'
+    extra_context = {'title': 'Змінити статтю'}
 
 
 def user_login(request):

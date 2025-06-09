@@ -33,13 +33,14 @@
             <hr>
 
             <!--  reviews-->
-            <form action="#!" method="post" , enctype="multipart/form-data">
-                <input type="hidden" name="csrfmiddlewaretoken"
-                       value="dVpvJs374bq08P5ZzKsB7pSNUnoJ6PXRIDRXHc1fjvFIdKmbXrQMDMR0wYHLFtut">
-                <textarea name="text" cols="40" rows="10" class="form-control" placeholder="Текст вашого коментаря"
-                          required id="id_text"></textarea>
-                <button class="btn btn-dark" type="submit">Додати коментар</button>
-            </form>
+            {% if request.user.is_authenticated %}
+                <form action="#!" method="post" , enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {% include 'components/_form_errors.html' %}
+                    {{ comment_form.text }}
+                    <button class="btn btn-dark" type="submit">Додати коментар</button>
+                </form>
+            {% endif %}
 
             <div class="card mt-2"><h5 class="card-header">Якась людина</h5>
                 <div class="card-body">
@@ -57,10 +58,11 @@
                              width="200" alt="">
                     {% else %}
                         <img class="card-img-top" src="{% static 'img/Photo_soon.jpg' %}"
-                            width="200" alt="">
+                             width="200" alt="">
                     {% endif %}
-                    <div class="card-body"><h5 class="card-title">{{ post.title }}</h5><a href="{{ post.get_absolute_url }}"
-                                                                                class="btn btn-primary">Детальніше</a>
+                    <div class="card-body"><h5 class="card-title">{{ post.title }}</h5><a
+                            href="{{ post.get_absolute_url }}"
+                            class="btn btn-primary">Детальніше</a>
                     </div>
                 </div>
             {% endfor %}

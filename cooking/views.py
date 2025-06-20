@@ -4,6 +4,11 @@ from django.contrib.auth import login, logout
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from django.urls import reverse_lazy
+from django.contrib.auth.models import User
+from django.contrib.auth.views import PasswordChangeView
+from .serializers import PostSerializer, CategorySerializer
+from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Post, Category, Comment
 from .forms import PostAddForm, LoginForm, RegisterForm, CommentForm
@@ -95,6 +100,7 @@ class PostDetail(DetailView):
         ext_posts = ext_posts.order_by('-watched')[:5]
         context['title'] = post.title
         context['ext_posts'] = ext_posts
+        context['comments'] = Comment.objects.filter(post=post)
 
         if self.request.user.is_authenticated:
             context['comment_form'] = CommentForm
@@ -124,6 +130,10 @@ class AddPost(CreateView):
     template_name = 'cooking/article_add_form.html'
     extra_context = {'title': 'Додати статтю'}
 
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
 
 class SearchResult(Index):
     """Пошук слова в заголовках і в змісту статей"""
@@ -150,6 +160,19 @@ class PostDelete(DeleteView):
     success_url = reverse_lazy('index')
     context_object_name = 'post'
     extra_context = {'title': 'Змінити статтю'}
+
+
+def add_comment(request, post_id):
+    """Додавання коментарів до статей"""
+    form = CommentForm(request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.user = request.user
+        comment.post = Post.objects.get(pk=post_id)
+        comment.save()
+        messages.success(request, 'Ваш коментар успішно додано!')
+
+    return redirect('post_detail', pk=post_id)
 
 
 def user_login(request):
@@ -198,3 +221,46 @@ def register(request):
     }
 
     return render(request, 'cooking/register.html', context)
+
+
+def profile(request, user_id):
+    """Сторінка користувача"""
+    user = User.objects.get(pk=user_id)
+    posts = Post.objects.filter(author=user)
+    context = {
+        'user': user,
+        'posts': posts,
+    }
+    return render(request, 'cooking/profile.html', context)
+
+
+class UserChangePassword(PasswordChangeView):
+    template_name = 'cooking/change_password.html'
+    """Простий спосіб зміни пароля користувача"""
+    success_url = reverse_lazy('index')
+
+
+class CookingApi(ListAPIView):
+    """Видача усіх статей по API"""
+    queryset = Post.objects.filter(is_published=True)
+    serializer_class = PostSerializer
+
+
+class CookingApiDetail(RetrieveAPIView):
+    """Видача статей по API"""
+    queryset = Post.objects.filter(is_published=True)
+    serializer_class = PostSerializer
+    permission_classes = (IsAuthenticated,)
+
+
+class CategoryApi(ListAPIView):
+    """Видача усіх категорій по API"""
+    queryset = Post.objects.filter(is_published=True)
+    serializer_class = PostSerializer
+
+class CategoryApiDetail(RetrieveAPIView):
+    """Видача усіх по API"""
+    queryset = Post.objects.filter(is_published=True)
+    serializer_class = CategorySerializer
+    permission_classes = (IsAuthenticated,)
+

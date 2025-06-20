@@ -38,7 +38,8 @@
                                         Вітаємо, {{ request.user.username }}!
                                     </a>
                                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                        <li><a class="dropdown-item" href="#!">Моя сторінка</a></li>
+                                        <li><a class="dropdown-item" href="{% url 'profile' request.user.pk %}">
+                                            Моя сторінка</a></li>
                                         <li><a class="dropdown-item" href="{% url 'add' %}">Додати статтю</a></li>
                                         <li><a class="dropdown-item" href="{% url 'logout' %}">Вихід</a></li>
                                     </ul>

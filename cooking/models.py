@@ -29,6 +29,7 @@ class Post(models.Model):
     watched = models.IntegerField(default=0, verbose_name='Перегляди')
     is_published = models.BooleanField(default=website_settings.publish_without_verification, verbose_name='Публікація')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категорія', related_name='posts')
+    author = models.ForeignKey(User, default=None, null=True, blank=True, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title

@@ -14,11 +14,18 @@ urlpatterns = [
     path('post/<int:pk>/update/', views.PostUpdate.as_view(), name='post_update'),
     path('post/<int:pk>/delete/', views.PostDelete.as_view(), name='post_delete'),
     path('search/', views.SearchResult.as_view(), name='search'),
+    path('password/', views.UserChangePassword.as_view(), name='change_password'),
+    path('posts/api/', views.CookingApi.as_view(), name='CookingApi'),
+    path('posts/api/<int:pk>/', views.CookingApiDetail.as_view(), name='CookingApiDetail'),
+    path('categories/api/', views.CategoryApi.as_view(), name='CookingCategory'),
+    path('categories/api/<int:pk>/', views.CategoryApiDetail.as_view(), name='CookingCategoryDetail'),
 
 
     # Functions
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
     path('register/', views.register, name='register'),
+    path('add_comment/<int:post_id>/', views.add_comment, name='add_comment'),
+    path('profile/<int:user_id>/', views.profile, name='profile'),
 
 ]

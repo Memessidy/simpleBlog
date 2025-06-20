@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.views import PasswordChangeView
 from .serializers import PostSerializer, CategorySerializer
 from rest_framework.generics import ListAPIView, RetrieveAPIView
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Post, Category, Comment
 from .forms import PostAddForm, LoginForm, RegisterForm, CommentForm
@@ -249,6 +250,7 @@ class CookingApiDetail(RetrieveAPIView):
     """Видача статей по API"""
     queryset = Post.objects.filter(is_published=True)
     serializer_class = PostSerializer
+    permission_classes = (IsAuthenticated,)
 
 
 class CategoryApi(ListAPIView):
@@ -256,9 +258,9 @@ class CategoryApi(ListAPIView):
     queryset = Post.objects.filter(is_published=True)
     serializer_class = PostSerializer
 
-
 class CategoryApiDetail(RetrieveAPIView):
     """Видача усіх по API"""
     queryset = Post.objects.filter(is_published=True)
-    serializer_class = PostSerializer
+    serializer_class = CategorySerializer
+    permission_classes = (IsAuthenticated,)
 
